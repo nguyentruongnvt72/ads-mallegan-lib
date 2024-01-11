@@ -11,23 +11,13 @@ public abstract class AdsApplication extends Application {
         super.onCreate();
         AppUtil.BUILD_DEBUG = buildDebug();
         Log.i("Application", " run debug: " + AppUtil.BUILD_DEBUG);
-        ConsentHelper consentHelper = ConsentHelper.getInstance(this);
-        if (!consentHelper.canLoadAndShowAds()) {
-            consentHelper.reset();
-        }
-//        consentHelper.obtainConsentAndShow(this) {
-//
+//        Admob.getInstance().initAdmob(this, getListTestDeviceId());
+//        if (enableAdsResume()) {
+//            AppOpenManager.getInstance().init(this, getResumeAdId());
 //        }
-        if (ConsentHelper.getInstance(this).canRequestAds()){
-            Admob.getInstance().initAdmob(this, getListTestDeviceId());
-            if (enableAdsResume()) {
-                AppOpenManager.getInstance().init(this, getResumeAdId());
-            }
-            if (enableAdjustTracking()) {
-                Adjust.getInstance().init(this, getAdjustToken());
-            }
-
-        }
+//        if (enableAdjustTracking()) {
+//            Adjust.getInstance().init(this, getAdjustToken());
+//        }
 
     }
 
