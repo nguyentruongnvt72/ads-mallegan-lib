@@ -20,7 +20,6 @@ public abstract class AdsApplication extends Application {
         }
 
     }
-
     public abstract boolean enableAdsResume();
 
     protected boolean enablePreloadAdsResume() {
