@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.appsflyer.AFInAppEventParameterName;
+import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.appsflyer.adrevenue.AppsFlyerAdRevenue;
 import com.appsflyer.adrevenue.adnetworks.generic.MediationNetwork;
@@ -39,8 +40,22 @@ public class AppsFlyer {
         initAppFlyerDebug(context, devKey, enableDebug);
     }
 
+    public void initAppFlyer(Application context, String devKey, boolean enableTrackingAppFlyerRevenue, AppsFlyerConversionListener appsFlyerConversionListener) {
+        this.enableTrackingAppFlyerRevenue = enableTrackingAppFlyerRevenue;
+        initAppFlyerDebug(context, devKey, false, appsFlyerConversionListener);
+    }
+
     public void initAppFlyerDebug(Application context, String devKey, boolean enableDebugLog) {
         AppsFlyerLib.getInstance().init(devKey, null, context);
+        AppsFlyerLib.getInstance().start(context);
+
+        AppsFlyerAdRevenue.Builder afRevenueBuilder = new AppsFlyerAdRevenue.Builder(context);
+        AppsFlyerAdRevenue.initialize(afRevenueBuilder.build());
+        AppsFlyerLib.getInstance().setDebugLog(enableDebugLog);
+    }
+
+    public void initAppFlyerDebug(Application context, String devKey, boolean enableDebugLog, AppsFlyerConversionListener appsFlyerConversionListener) {
+        AppsFlyerLib.getInstance().init(devKey, appsFlyerConversionListener, context);
         AppsFlyerLib.getInstance().start(context);
 
         AppsFlyerAdRevenue.Builder afRevenueBuilder = new AppsFlyerAdRevenue.Builder(context);
