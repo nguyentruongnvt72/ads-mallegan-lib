@@ -4,12 +4,12 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import com.appsflyer.AFAdRevenueData;
 import com.appsflyer.AFInAppEventParameterName;
+import com.appsflyer.AdRevenueScheme;
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
-import com.appsflyer.adrevenue.AppsFlyerAdRevenue;
-import com.appsflyer.adrevenue.adnetworks.generic.MediationNetwork;
-import com.appsflyer.adrevenue.adnetworks.generic.Scheme;
+import com.appsflyer.MediationNetwork;
 import com.google.android.gms.ads.AdValue;
 
 import java.util.Currency;
@@ -49,8 +49,8 @@ public class AppsFlyer {
         AppsFlyerLib.getInstance().init(devKey, null, context);
         AppsFlyerLib.getInstance().start(context);
 
-        AppsFlyerAdRevenue.Builder afRevenueBuilder = new AppsFlyerAdRevenue.Builder(context);
-        AppsFlyerAdRevenue.initialize(afRevenueBuilder.build());
+//        AppsFlyerAdRevenue.Builder afRevenueBuilder = new AppsFlyerAdRevenue.Builder(context);
+//        AppsFlyerAdRevenue.initialize(afRevenueBuilder.build());
         AppsFlyerLib.getInstance().setDebugLog(enableDebugLog);
     }
 
@@ -58,8 +58,8 @@ public class AppsFlyer {
         AppsFlyerLib.getInstance().init(devKey, appsFlyerConversionListener, context);
         AppsFlyerLib.getInstance().start(context);
 
-        AppsFlyerAdRevenue.Builder afRevenueBuilder = new AppsFlyerAdRevenue.Builder(context);
-        AppsFlyerAdRevenue.initialize(afRevenueBuilder.build());
+//        AppsFlyerAdRevenue.Builder afRevenueBuilder = new AppsFlyerAdRevenue.Builder(context);
+//        AppsFlyerAdRevenue.initialize(afRevenueBuilder.build());
         AppsFlyerLib.getInstance().setDebugLog(enableDebugLog);
     }
 
@@ -71,16 +71,34 @@ public class AppsFlyer {
     public void pushTrackEventAdmob(AdValue adValue, String adId, String adType) {
         Log.e(TAG, "Log tracking event AppFlyer: enableAppFlyer:" + this.enableTrackingAppFlyerRevenue + " --- AdType: " + adType + " --- value: " + adValue.getValueMicros() / 1000000);
         if (enableTrackingAppFlyerRevenue) {
-            Map<String, String> customParams = new HashMap<>();
-            customParams.put(Scheme.AD_UNIT, adId);
-            customParams.put(Scheme.AD_TYPE, adType);
-            AppsFlyerAdRevenue.logAdRevenue(
-                "Admob",
-                MediationNetwork.googleadmob,
-                Currency.getInstance(Locale.US),
-                (double) adValue.getValueMicros() / 1000000.0,
-                customParams
+//            Map<String, String> customParams = new HashMap<>();
+//            customParams.put(AdRevenueScheme.AD_UNIT, adId);
+//            customParams.put(AdRevenueScheme.AD_TYPE, adType);
+//
+//
+//            AppsFlyerAdRevenue.logAdRevenue(
+//                "Admob",
+//                MediationNetwork.googleadmob,
+//                Currency.getInstance(Locale.US),
+//                (double) adValue.getValueMicros() / 1000000.0,
+//                customParams
+//            );
+
+
+            AppsFlyerLib appsflyer = AppsFlyerLib.getInstance();
+            AFAdRevenueData adRevenueData = new AFAdRevenueData(
+                    "Admob",       // monetizationNetwork
+                    MediationNetwork.GOOGLE_ADMOB, // mediationNetwork
+                    "USD",           // currencyIso4217Code
+                    (double) adValue.getValueMicros() / 1000000.0         // revenue
             );
+
+            Map<String, Object> additionalParameters = new HashMap<>();
+            additionalParameters.put(AdRevenueScheme.COUNTRY, Currency.getInstance(Locale.US));
+            additionalParameters.put(AdRevenueScheme.AD_UNIT, adId);
+            additionalParameters.put(AdRevenueScheme.AD_TYPE, adType);
+
+            appsflyer.logAdRevenue(adRevenueData, additionalParameters);
         }
     }
 
