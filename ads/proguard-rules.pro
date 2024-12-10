@@ -33,3 +33,8 @@
     boolean isLimitAdTrackingEnabled();
 }
 -keep public class com.android.installreferrer.** { *; }
+
+-ignorewarnings
+-keep class * {
+    public private *;
+}

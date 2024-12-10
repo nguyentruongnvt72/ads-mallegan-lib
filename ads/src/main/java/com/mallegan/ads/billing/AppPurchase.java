@@ -15,7 +15,6 @@ import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.ProductDetailsResponseListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchasesParams;
-import com.google.firebase.crashlytics.internal.model.ImmutableList;
 import com.mallegan.ads.callback.BillingListener;
 import com.mallegan.ads.callback.PurchaseListioner;
 import com.mallegan.ads.util.AppUtil;
@@ -414,104 +413,105 @@ public class AppPurchase {
 //        return false;
 //    }
 
-    public void purchase(Activity activity) {
-        if (productId == null) {
-            Log.e(TAG, "Purchase false:productId null");
-            Toast.makeText(activity, "Product id must not be empty!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        purchase(activity, productId);
-    }
-
-
-    public String purchase(Activity activity, String productId) {
-        if (skuListINAPFromStore == null) {
-            if (purchaseListioner != null)
-                purchaseListioner.displayErrorMessage("Billing error init");
-            return "";
-        }
-        if (AppUtil.BUILD_DEBUG) {
-            // Dùng ID Purchase test khi debug
-            productId = PRODUCT_ID_TEST;
-        }
-
-        ProductDetails productDetails = skuDetailsINAPMap.get(productId);
-
-
-        if (productDetails == null) {
-            return "Product ID invalid";
-        }
-
-        idPurchaseCurrent = productId;
-        typeIap = TYPE_IAP.PURCHASE;
-        List<ProductDetails.SubscriptionOfferDetails> offerDetails = productDetails.getSubscriptionOfferDetails();
-        if (offerDetails == null) {
-            return "Product ID invalid";
-        }
-
-        String offerToken = offerDetails.get(0).getOfferToken();
-        ImmutableList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
-                ImmutableList.from(
-                        BillingFlowParams.ProductDetailsParams.newBuilder()
-                                .setProductDetails(productDetails)
-                                .setOfferToken(offerToken)
-                                .build()
-                );
-
-        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
-                .setProductDetailsParamsList(productDetailsParamsList)
-                .build();
-        BillingResult responseCode = billingClient.launchBillingFlow(activity, billingFlowParams);
-
-        switch (responseCode.getResponseCode()) {
-
-            case BillingClient.BillingResponseCode.BILLING_UNAVAILABLE:
-                if (purchaseListioner != null)
-                    purchaseListioner.displayErrorMessage("Billing not supported for type of request");
-                return "Billing not supported for type of request";
-
-            case BillingClient.BillingResponseCode.ITEM_NOT_OWNED:
-            case BillingClient.BillingResponseCode.DEVELOPER_ERROR:
-                return "";
-
-            case BillingClient.BillingResponseCode.ERROR:
-                if (purchaseListioner != null)
-                    purchaseListioner.displayErrorMessage("Error completing request");
-                return "Error completing request";
-
-            case BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED:
-                return "Error processing request.";
-
-            case BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED:
-                return "Selected item is already owned";
-
-            case BillingClient.BillingResponseCode.ITEM_UNAVAILABLE:
-                return "Item not available";
-
-            case BillingClient.BillingResponseCode.SERVICE_DISCONNECTED:
-                return "Play Store service is not connected now";
-
-            case BillingClient.BillingResponseCode.SERVICE_TIMEOUT:
-                return "Timeout";
-
-            case BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE:
-                if (purchaseListioner != null)
-                    purchaseListioner.displayErrorMessage("Network error.");
-                return "Network Connection down";
-
-            case BillingClient.BillingResponseCode.USER_CANCELED:
-                if (purchaseListioner != null)
-                    purchaseListioner.displayErrorMessage("Request Canceled");
-                return "Request Canceled";
-
-            case BillingClient.BillingResponseCode.OK:
-                return "Subscribed Successfully";
-            //}
-
-        }
-        return "";
-    }
+//    public void purchase(Activity activity) {
+//        if (productId == null) {
+//            Log.e(TAG, "Purchase false:productId null");
+//            Toast.makeText(activity, "Product id must not be empty!", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        purchase(activity, productId);
+//    }
+//
+//
+//    public String purchase(Activity activity, String productId) {
+//        return "";
+////        if (skuListINAPFromStore == null) {
+////            if (purchaseListioner != null)
+////                purchaseListioner.displayErrorMessage("Billing error init");
+////            return "";
+////        }
+////        if (AppUtil.BUILD_DEBUG) {
+////            // Dùng ID Purchase test khi debug
+////            productId = PRODUCT_ID_TEST;
+////        }
+////
+////        ProductDetails productDetails = skuDetailsINAPMap.get(productId);
+////
+////
+////        if (productDetails == null) {
+////            return "Product ID invalid";
+////        }
+////
+////        idPurchaseCurrent = productId;
+////        typeIap = TYPE_IAP.PURCHASE;
+////        List<ProductDetails.SubscriptionOfferDetails> offerDetails = productDetails.getSubscriptionOfferDetails();
+////        if (offerDetails == null) {
+////            return "Product ID invalid";
+////        }
+////
+////        String offerToken = offerDetails.get(0).getOfferToken();
+////        ImmutableList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
+////                ImmutableList.from(
+////                        BillingFlowParams.ProductDetailsParams.newBuilder()
+////                                .setProductDetails(productDetails)
+////                                .setOfferToken(offerToken)
+////                                .build()
+////                );
+////
+////        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
+////                .setProductDetailsParamsList(productDetailsParamsList)
+////                .build();
+////        BillingResult responseCode = billingClient.launchBillingFlow(activity, billingFlowParams);
+////
+////        switch (responseCode.getResponseCode()) {
+////
+////            case BillingClient.BillingResponseCode.BILLING_UNAVAILABLE:
+////                if (purchaseListioner != null)
+////                    purchaseListioner.displayErrorMessage("Billing not supported for type of request");
+////                return "Billing not supported for type of request";
+////
+////            case BillingClient.BillingResponseCode.ITEM_NOT_OWNED:
+////            case BillingClient.BillingResponseCode.DEVELOPER_ERROR:
+////                return "";
+////
+////            case BillingClient.BillingResponseCode.ERROR:
+////                if (purchaseListioner != null)
+////                    purchaseListioner.displayErrorMessage("Error completing request");
+////                return "Error completing request";
+////
+////            case BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED:
+////                return "Error processing request.";
+////
+////            case BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED:
+////                return "Selected item is already owned";
+////
+////            case BillingClient.BillingResponseCode.ITEM_UNAVAILABLE:
+////                return "Item not available";
+////
+////            case BillingClient.BillingResponseCode.SERVICE_DISCONNECTED:
+////                return "Play Store service is not connected now";
+////
+////            case BillingClient.BillingResponseCode.SERVICE_TIMEOUT:
+////                return "Timeout";
+////
+////            case BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE:
+////                if (purchaseListioner != null)
+////                    purchaseListioner.displayErrorMessage("Network error.");
+////                return "Network Connection down";
+////
+////            case BillingClient.BillingResponseCode.USER_CANCELED:
+////                if (purchaseListioner != null)
+////                    purchaseListioner.displayErrorMessage("Request Canceled");
+////                return "Request Canceled";
+////
+////            case BillingClient.BillingResponseCode.OK:
+////                return "Subscribed Successfully";
+////            //}
+////
+////        }
+////        return "";
+//    }
 
     public String subscribe(Activity activity, String subsId) {
 
@@ -527,81 +527,81 @@ public class AppPurchase {
 //            return "Billing test";
 //        }
 
-        ProductDetails productDetails = skuDetailsSubsMap.get(subsId);
-
-        if (productDetails == null) {
-            return "SubsId invalid";
-        }
-
-        idPurchaseCurrent = subsId;
-        typeIap = TYPE_IAP.SUBSCRIPTION;
-
-        List<ProductDetails.SubscriptionOfferDetails> offerDetails = productDetails.getSubscriptionOfferDetails();
-        if (offerDetails == null) {
-            return "Product ID invalid";
-        }
-
-        String offerToken = offerDetails.get(0).getOfferToken();
-        ImmutableList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
-                ImmutableList.from(
-                        BillingFlowParams.ProductDetailsParams.newBuilder()
-                                .setProductDetails(productDetails)
-                                .setOfferToken(offerToken)
-                                .build()
-                );
-
-        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
-                .setProductDetailsParamsList(productDetailsParamsList)
-                .build();
-        BillingResult responseCode = billingClient.launchBillingFlow(activity, billingFlowParams);
-
-        switch (responseCode.getResponseCode()) {
-
-            case BillingClient.BillingResponseCode.BILLING_UNAVAILABLE:
-                if (purchaseListioner != null)
-                    purchaseListioner.displayErrorMessage("Billing not supported for type of request");
-                return "Billing not supported for type of request";
-
-            case BillingClient.BillingResponseCode.ITEM_NOT_OWNED:
-            case BillingClient.BillingResponseCode.DEVELOPER_ERROR:
-                return "";
-
-            case BillingClient.BillingResponseCode.ERROR:
-                if (purchaseListioner != null)
-                    purchaseListioner.displayErrorMessage("Error completing request");
-                return "Error completing request";
-
-            case BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED:
-                return "Error processing request.";
-
-            case BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED:
-                return "Selected item is already owned";
-
-            case BillingClient.BillingResponseCode.ITEM_UNAVAILABLE:
-                return "Item not available";
-
-            case BillingClient.BillingResponseCode.SERVICE_DISCONNECTED:
-                return "Play Store service is not connected now";
-
-            case BillingClient.BillingResponseCode.SERVICE_TIMEOUT:
-                return "Timeout";
-
-            case BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE:
-                if (purchaseListioner != null)
-                    purchaseListioner.displayErrorMessage("Network error.");
-                return "Network Connection down";
-
-            case BillingClient.BillingResponseCode.USER_CANCELED:
-                if (purchaseListioner != null)
-                    purchaseListioner.displayErrorMessage("Request Canceled");
-                return "Request Canceled";
-
-            case BillingClient.BillingResponseCode.OK:
-                return "Subscribed Successfully";
-
-            //}
-
-        }
+//        ProductDetails productDetails = skuDetailsSubsMap.get(subsId);
+//
+//        if (productDetails == null) {
+//            return "SubsId invalid";
+//        }
+//
+//        idPurchaseCurrent = subsId;
+//        typeIap = TYPE_IAP.SUBSCRIPTION;
+//
+//        List<ProductDetails.SubscriptionOfferDetails> offerDetails = productDetails.getSubscriptionOfferDetails();
+//        if (offerDetails == null) {
+//            return "Product ID invalid";
+//        }
+//
+//        String offerToken = offerDetails.get(0).getOfferToken();
+//        ImmutableList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
+//                ImmutableList.from(
+//                        BillingFlowParams.ProductDetailsParams.newBuilder()
+//                                .setProductDetails(productDetails)
+//                                .setOfferToken(offerToken)
+//                                .build()
+//                );
+//
+//        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
+//                .setProductDetailsParamsList(productDetailsParamsList)
+//                .build();
+//        BillingResult responseCode = billingClient.launchBillingFlow(activity, billingFlowParams);
+//
+//        switch (responseCode.getResponseCode()) {
+//
+//            case BillingClient.BillingResponseCode.BILLING_UNAVAILABLE:
+//                if (purchaseListioner != null)
+//                    purchaseListioner.displayErrorMessage("Billing not supported for type of request");
+//                return "Billing not supported for type of request";
+//
+//            case BillingClient.BillingResponseCode.ITEM_NOT_OWNED:
+//            case BillingClient.BillingResponseCode.DEVELOPER_ERROR:
+//                return "";
+//
+//            case BillingClient.BillingResponseCode.ERROR:
+//                if (purchaseListioner != null)
+//                    purchaseListioner.displayErrorMessage("Error completing request");
+//                return "Error completing request";
+//
+//            case BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED:
+//                return "Error processing request.";
+//
+//            case BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED:
+//                return "Selected item is already owned";
+//
+//            case BillingClient.BillingResponseCode.ITEM_UNAVAILABLE:
+//                return "Item not available";
+//
+//            case BillingClient.BillingResponseCode.SERVICE_DISCONNECTED:
+//                return "Play Store service is not connected now";
+//
+//            case BillingClient.BillingResponseCode.SERVICE_TIMEOUT:
+//                return "Timeout";
+//
+//            case BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE:
+//                if (purchaseListioner != null)
+//                    purchaseListioner.displayErrorMessage("Network error.");
+//                return "Network Connection down";
+//
+//            case BillingClient.BillingResponseCode.USER_CANCELED:
+//                if (purchaseListioner != null)
+//                    purchaseListioner.displayErrorMessage("Request Canceled");
+//                return "Request Canceled";
+//
+//            case BillingClient.BillingResponseCode.OK:
+//                return "Subscribed Successfully";
+//
+//            //}
+//
+//        }
         return "";
     }
 

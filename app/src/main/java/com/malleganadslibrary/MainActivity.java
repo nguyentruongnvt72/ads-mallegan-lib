@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AppPurchase.getInstance().consumePurchase(PRODUCT_ID_MONTH);
-                AppPurchase.getInstance().purchase(MainActivity.this, PRODUCT_ID_MONTH);
+//                AppPurchase.getInstance().purchase(MainActivity.this, PRODUCT_ID_MONTH);
                 //real
                 // AppPurchase.getInstance().subscribe(MainActivity.this, SubID);
             }

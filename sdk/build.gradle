@@ -3,6 +3,7 @@ plugins {
 }
 
 android {
+    namespace = "com.amazic.admobMeditationSdk"
     compileSdk 34
 
     defaultConfig {
@@ -20,8 +21,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
@@ -31,10 +32,10 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
-    implementation 'com.google.android.gms:play-services-ads:23.2.0'
+    implementation 'com.google.android.gms:play-services-ads:23.6.0'
     //multidex
     implementation "androidx.multidex:multidex:2.0.1"
     //play core
-    implementation platform('com.google.firebase:firebase-bom:28.0.1')
+    implementation platform('com.google.firebase:firebase-bom:33.7.0')
     implementation 'com.google.firebase:firebase-analytics'
 }
