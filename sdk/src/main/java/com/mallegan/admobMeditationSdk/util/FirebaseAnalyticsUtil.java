@@ -1,4 +1,4 @@
-package com.amazic.admobMeditationSdk.util;
+package com.mallegan.admobMeditationSdk.util;
 
 import android.content.Context;
 import android.os.Bundle;

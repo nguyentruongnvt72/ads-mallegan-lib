@@ -1,4 +1,4 @@
-package com.amazic.admobMeditationSdk.adx;
+package com.mallegan.admobMeditationSdk.admob;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,12 +7,11 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.amazic.admobMeditationSdk.util.FirebaseAnalyticsUtil;
+import com.mallegan.admobMeditationSdk.util.FirebaseAnalyticsUtil;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.admanager.AdManagerAdRequest;
 import com.google.android.gms.ads.mediation.NativeMediationAdRequest;
 import com.google.android.gms.ads.mediation.customevent.CustomEventNative;
 import com.google.android.gms.ads.mediation.customevent.CustomEventNativeListener;
@@ -27,7 +26,7 @@ public class nativeAds implements CustomEventNative {
                                 @Nullable Bundle bundle) {
 
         Log.e(Tag, "ID :"+serverParameter );
-        FirebaseAnalyticsUtil.logEventMediationAdx(context,FirebaseAnalyticsUtil.NATIVE);
+        FirebaseAnalyticsUtil.logEventMediationAdmob(context,FirebaseAnalyticsUtil.NATIVE);
         AdLoader adLoader = new AdLoader.Builder(context, serverParameter)
                 .withAdListener(new AdListener() {
                     @Override
@@ -54,7 +53,7 @@ public class nativeAds implements CustomEventNative {
                 .build();
 
         // Begin a request.
-        adLoader.loadAd( new AdManagerAdRequest.Builder().build());
+        adLoader.loadAd( new AdRequest.Builder().build());
     }
 
 

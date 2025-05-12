@@ -1,4 +1,4 @@
-package com.amazic.admobMeditationSdk;
+package com.mallegan.admobMeditationSdk;
 
 import org.junit.Test;
 

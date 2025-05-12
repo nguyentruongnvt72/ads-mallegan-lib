@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.amazic.admobMeditationSdk"
+    namespace = "com.mallegan.admobMeditationSdk"
     compileSdk 34
 
     defaultConfig {

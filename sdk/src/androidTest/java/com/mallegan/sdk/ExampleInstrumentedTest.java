@@ -1,4 +1,4 @@
-package com.amazic.admobMeditationSdk;
+package com.mallegan.admobMeditationSdk;
 
 import android.content.Context;
 import androidx.test.platform.app.InstrumentationRegistry;
