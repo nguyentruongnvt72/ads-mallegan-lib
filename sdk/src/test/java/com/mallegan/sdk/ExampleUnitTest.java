@@ -1,4 +1,4 @@
-package com.mallegan.admobMeditationSdk;
+package com.mallegan.admobmeditationsdk;
 
 import org.junit.Test;
 

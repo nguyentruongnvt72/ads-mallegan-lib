@@ -1,4 +1,4 @@
-package com.mallegan.admobMeditationSdk.adx;
+package com.mkj.admobmeditationsdk.adx;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.mallegan.admobMeditationSdk.util.FirebaseAnalyticsUtil;
+import com.mkj.admobmeditationsdk.util.FirebaseAnalyticsUtil;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.admanager.AdManagerAdRequest;

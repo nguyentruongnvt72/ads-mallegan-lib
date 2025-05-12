@@ -1,4 +1,4 @@
-package com.mallegan.admobMeditationSdk.admob;
+package com.mkj.admobmeditationsdk.admob;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.mallegan.admobMeditationSdk.util.FirebaseAnalyticsUtil;
+import com.mkj.admobmeditationsdk.util.FirebaseAnalyticsUtil;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
