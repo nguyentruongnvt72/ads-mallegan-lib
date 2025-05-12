@@ -9,8 +9,8 @@ android {
     defaultConfig {
         minSdk 23
         targetSdkVersion 35
-        versionCode 117
-        versionName "1.1.7"
+        versionCode 118
+        versionName "1.1.8"
 
 
 
@@ -29,10 +29,14 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+
+    buildFeatures {
+        buildConfig true
+    }
 }
 
 dependencies {
-
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
