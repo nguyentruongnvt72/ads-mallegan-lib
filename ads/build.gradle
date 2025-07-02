@@ -55,15 +55,15 @@ dependencies {
 
     implementation 'com.intuit.sdp:sdp-android:1.1.0'
     implementation 'androidx.lifecycle:lifecycle-process:2.6.2'
-    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
+//    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
 
     def multidex_version = "2.0.1"
     implementation "androidx.multidex:multidex:$multidex_version"
-    implementation "com.android.billingclient:billing:8.0.0"
-    implementation 'com.google.android.gms:play-services-ads-identifier:18.1.0'
-    implementation 'com.google.android.ump:user-messaging-platform:2.1.0'
+    implementation "com.android.billingclient:billing:7.1.0"
+//    implementation 'com.google.android.gms:play-services-ads-identifier:18.1.0'
+    implementation 'com.google.android.ump:user-messaging-platform:3.2.0'
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:33.7.0')
+    implementation platform('com.google.firebase:firebase-bom:33.16.0')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-messaging'
@@ -71,7 +71,7 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-ads:23.6.0'
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
-    implementation 'com.google.android.gms:play-services-basement:18.5.0'
+//    implementation 'com.google.android.gms:play-services-basement:18.7.0'
     implementation 'com.google.code.gson:gson:2.10.1'
 
 //fb sdk

@@ -1,4 +1,3 @@
 rootProject.name = "malleganAdsLibrary"
 include ':app'
 include ':ads'
-include ':sdk'

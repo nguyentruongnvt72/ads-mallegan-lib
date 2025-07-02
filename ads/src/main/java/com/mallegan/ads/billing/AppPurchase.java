@@ -38,6 +38,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableList;
+
 public class AppPurchase {
     private static final String LICENSE_KEY = null;
     private static final String MERCHANT_ID = null;
@@ -134,6 +136,54 @@ public class AppPurchase {
         this.oldPrice = oldPrice;
     }
 
+
+
+    public boolean isPurchased(Context context, String productId) {
+        // Kiểm tra INAPP
+        if (listINAPId != null && billingClient != null) {
+            final boolean[] result = {false};
+            billingClient.queryPurchasesAsync(
+                    QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.INAPP).build(),
+                    new PurchasesResponseListener() {
+                        @Override
+                        public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> purchases) {
+                            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                                for (Purchase purchase : purchases) {
+                                    if (purchase.getProducts().contains(productId)) {
+                                        result[0] = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+            );
+            if (result[0]) return true;
+        }
+        // Kiểm tra SUBS
+        if (listSubcriptionId != null && billingClient != null) {
+            final boolean[] result = {false};
+            billingClient.queryPurchasesAsync(
+                    QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.SUBS).build(),
+                    new PurchasesResponseListener() {
+                        @Override
+                        public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> purchases) {
+                            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                                for (Purchase purchase : purchases) {
+                                    if (purchase.getProducts().contains(productId)) {
+                                        result[0] = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+            );
+            if (result[0]) return true;
+        }
+        return false;
+    }
+
     PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
         @Override
         public void onPurchasesUpdated(@NonNull BillingResult billingResult, List<Purchase> list) {
@@ -141,7 +191,7 @@ public class AppPurchase {
             if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null) {
                 for (Purchase purchase : list) {
 
-                    List<String> sku = purchase.getSkus();
+                    List<String> sku = purchase.getProducts();
                     handlePurchase(purchase);
                 }
             } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
@@ -173,7 +223,7 @@ public class AppPurchase {
                 isAvailable = true;
 
                 List<QueryProductDetailsParams.Product> products = new ArrayList<>();
-                if (listINAPId.size() > 0) {
+                if (!listINAPId.isEmpty()) {
                     for (String sku : listINAPId) {
                         QueryProductDetailsParams.Product query = QueryProductDetailsParams.Product.newBuilder()
                                 .setProductId(sku)
@@ -266,7 +316,6 @@ public class AppPurchase {
         }
         billingClient = BillingClient.newBuilder(application)
                 .setListener(purchasesUpdatedListener)
-                .enablePendingPurchases()
                 .build();
 
         billingClient.startConnection(purchaseClientStateListener);
@@ -275,13 +324,11 @@ public class AppPurchase {
     public void initBilling(final Application application, List<String> listINAPId, List<String> listSubsId) {
         listSubcriptionId = listSubsId;
         this.listINAPId = listINAPId;
-
 //        if (AppUtil.BUILD_DEBUG) {
 //            listINAPId.add(PRODUCT_ID_TEST);
 //        }
         billingClient = BillingClient.newBuilder(application)
                 .setListener(purchasesUpdatedListener)
-                .enablePendingPurchases()
                 .build();
 
         billingClient.startConnection(purchaseClientStateListener);
@@ -320,7 +367,7 @@ public class AppPurchase {
                 @Override
                 public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> list) {
                     Log.d(TAG, "verifyPurchased INAPP  code:" + billingResult.getResponseCode() + " ===   size:" + list.size());
-                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null) {
+                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                         for (Purchase purchase : list) {
                             for (String id : listINAPId) {
                                 if (purchase.getProducts().contains(id)) {
@@ -351,7 +398,7 @@ public class AppPurchase {
                 @Override
                 public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> list) {
                     Log.d(TAG, "verifyPurchased SUBS  code:" + billingResult.getResponseCode() + " ===   size:" + list.size());
-                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null) {
+                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                         for (Purchase purchase : list) {
                             for (String id : listSubcriptionId) {
                                 if (purchase.getProducts().contains(id)) {
@@ -384,7 +431,7 @@ public class AppPurchase {
 //            return "null";
 //        StringBuilder log = new StringBuilder();
 //        for (Purchase purchase : result.getPurchasesList()) {
-//            for (String s : purchase.getSkus()) {
+//            for (String s : purchase.getProducts()) {
 //                log.append(s).append(",");
 //            }
 //        }
@@ -397,7 +444,7 @@ public class AppPurchase {
 //        Purchase.PurchasesResult resultINAP = billingClient.queryPurchases(BillingClient.SkuType.INAPP);
 //        if (resultINAP.getResponseCode() == BillingClient.BillingResponseCode.OK && resultINAP.getPurchasesList() != null) {
 //            for (Purchase purchase : resultINAP.getPurchasesList()) {
-//                if (purchase.getSkus().contains(productId)) {
+//                if (purchase.getProducts().contains(productId)) {
 //                    return true;
 //                }
 //            }
@@ -413,195 +460,176 @@ public class AppPurchase {
 //        return false;
 //    }
 
-//    public void purchase(Activity activity) {
-//        if (productId == null) {
-//            Log.e(TAG, "Purchase false:productId null");
-//            Toast.makeText(activity, "Product id must not be empty!", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        purchase(activity, productId);
-//    }
-//
-//
-//    public String purchase(Activity activity, String productId) {
-//        return "";
-////        if (skuListINAPFromStore == null) {
-////            if (purchaseListioner != null)
-////                purchaseListioner.displayErrorMessage("Billing error init");
-////            return "";
-////        }
-////        if (AppUtil.BUILD_DEBUG) {
-////            // Dùng ID Purchase test khi debug
-////            productId = PRODUCT_ID_TEST;
-////        }
-////
-////        ProductDetails productDetails = skuDetailsINAPMap.get(productId);
-////
-////
-////        if (productDetails == null) {
-////            return "Product ID invalid";
-////        }
-////
-////        idPurchaseCurrent = productId;
-////        typeIap = TYPE_IAP.PURCHASE;
-////        List<ProductDetails.SubscriptionOfferDetails> offerDetails = productDetails.getSubscriptionOfferDetails();
-////        if (offerDetails == null) {
-////            return "Product ID invalid";
-////        }
-////
-////        String offerToken = offerDetails.get(0).getOfferToken();
-////        ImmutableList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
-////                ImmutableList.from(
-////                        BillingFlowParams.ProductDetailsParams.newBuilder()
-////                                .setProductDetails(productDetails)
-////                                .setOfferToken(offerToken)
-////                                .build()
-////                );
-////
-////        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
-////                .setProductDetailsParamsList(productDetailsParamsList)
-////                .build();
-////        BillingResult responseCode = billingClient.launchBillingFlow(activity, billingFlowParams);
-////
-////        switch (responseCode.getResponseCode()) {
-////
-////            case BillingClient.BillingResponseCode.BILLING_UNAVAILABLE:
-////                if (purchaseListioner != null)
-////                    purchaseListioner.displayErrorMessage("Billing not supported for type of request");
-////                return "Billing not supported for type of request";
-////
-////            case BillingClient.BillingResponseCode.ITEM_NOT_OWNED:
-////            case BillingClient.BillingResponseCode.DEVELOPER_ERROR:
-////                return "";
-////
-////            case BillingClient.BillingResponseCode.ERROR:
-////                if (purchaseListioner != null)
-////                    purchaseListioner.displayErrorMessage("Error completing request");
-////                return "Error completing request";
-////
-////            case BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED:
-////                return "Error processing request.";
-////
-////            case BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED:
-////                return "Selected item is already owned";
-////
-////            case BillingClient.BillingResponseCode.ITEM_UNAVAILABLE:
-////                return "Item not available";
-////
-////            case BillingClient.BillingResponseCode.SERVICE_DISCONNECTED:
-////                return "Play Store service is not connected now";
-////
-////            case BillingClient.BillingResponseCode.SERVICE_TIMEOUT:
-////                return "Timeout";
-////
-////            case BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE:
-////                if (purchaseListioner != null)
-////                    purchaseListioner.displayErrorMessage("Network error.");
-////                return "Network Connection down";
-////
-////            case BillingClient.BillingResponseCode.USER_CANCELED:
-////                if (purchaseListioner != null)
-////                    purchaseListioner.displayErrorMessage("Request Canceled");
-////                return "Request Canceled";
-////
-////            case BillingClient.BillingResponseCode.OK:
-////                return "Subscribed Successfully";
-////            //}
-////
-////        }
-////        return "";
-//    }
+    public String purchase(Activity activity, String productId) {
+        if (skuListINAPFromStore == null) {
+            if (purchaseListioner != null)
+                purchaseListioner.displayErrorMessage("Billing error init");
+            return "";
+        }
+        if (AppUtil.BUILD_DEBUG) {
+            // Dùng ID Purchase test khi debug
+            productId = PRODUCT_ID_TEST;
+        }
+
+        ProductDetails productDetails = skuDetailsINAPMap.get(productId);
+
+
+        if (productDetails == null) {
+            return "Product ID invalid";
+        }
+
+        idPurchaseCurrent = productId;
+        typeIap = TYPE_IAP.PURCHASE;
+        List<ProductDetails.SubscriptionOfferDetails> offerDetails = productDetails.getSubscriptionOfferDetails();
+        if (offerDetails == null) {
+            return "Product ID invalid";
+        }
+
+        String offerToken = offerDetails.get(0).getOfferToken();
+        ImmutableList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
+                ImmutableList.of(
+                        BillingFlowParams.ProductDetailsParams.newBuilder()
+                                .setProductDetails(productDetails)
+                                .setOfferToken(offerToken)
+                                .build()
+                );
+
+        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
+                .setProductDetailsParamsList(productDetailsParamsList)
+                .build();
+        BillingResult responseCode = billingClient.launchBillingFlow(activity, billingFlowParams);
+
+        switch (responseCode.getResponseCode()) {
+
+            case BillingClient.BillingResponseCode.BILLING_UNAVAILABLE:
+                if (purchaseListioner != null)
+                    purchaseListioner.displayErrorMessage("Billing not supported for type of request");
+                return "Billing not supported for type of request";
+
+            case BillingClient.BillingResponseCode.ITEM_NOT_OWNED:
+            case BillingClient.BillingResponseCode.DEVELOPER_ERROR:
+                return "";
+
+            case BillingClient.BillingResponseCode.ERROR:
+                if (purchaseListioner != null)
+                    purchaseListioner.displayErrorMessage("Error completing request");
+                return "Error completing request";
+
+            case BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED:
+                return "Error processing request.";
+
+            case BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED:
+                return "Selected item is already owned";
+
+            case BillingClient.BillingResponseCode.ITEM_UNAVAILABLE:
+                return "Item not available";
+
+            case BillingClient.BillingResponseCode.SERVICE_DISCONNECTED:
+                return "Play Store service is not connected now";
+
+            case BillingClient.BillingResponseCode.SERVICE_TIMEOUT:
+                return "Timeout";
+
+            case BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE:
+                if (purchaseListioner != null)
+                    purchaseListioner.displayErrorMessage("Network error.");
+                return "Network Connection down";
+
+            case BillingClient.BillingResponseCode.USER_CANCELED:
+                if (purchaseListioner != null)
+                    purchaseListioner.displayErrorMessage("Request Canceled");
+                return "Request Canceled";
+
+            case BillingClient.BillingResponseCode.OK:
+                return "Subscribed Successfully";
+            //}
+
+        }
+        return "";
+    }
 
     public String subscribe(Activity activity, String subsId) {
-
         if (skuListSubsFromStore == null) {
             if (purchaseListioner != null)
                 purchaseListioner.displayErrorMessage("Billing error init");
             return "";
         }
 
-//        if (AppUtil.BUILD_DEBUG) {
-//            // sử dụng ID Purchase test
-//            purchase(activity, PRODUCT_ID_TEST);
-//            return "Billing test";
-//        }
+        ProductDetails productDetails = skuDetailsSubsMap.get(subsId);
 
-//        ProductDetails productDetails = skuDetailsSubsMap.get(subsId);
-//
-//        if (productDetails == null) {
-//            return "SubsId invalid";
-//        }
-//
-//        idPurchaseCurrent = subsId;
-//        typeIap = TYPE_IAP.SUBSCRIPTION;
-//
-//        List<ProductDetails.SubscriptionOfferDetails> offerDetails = productDetails.getSubscriptionOfferDetails();
-//        if (offerDetails == null) {
-//            return "Product ID invalid";
-//        }
-//
-//        String offerToken = offerDetails.get(0).getOfferToken();
-//        ImmutableList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
-//                ImmutableList.from(
-//                        BillingFlowParams.ProductDetailsParams.newBuilder()
-//                                .setProductDetails(productDetails)
-//                                .setOfferToken(offerToken)
-//                                .build()
-//                );
-//
-//        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
-//                .setProductDetailsParamsList(productDetailsParamsList)
-//                .build();
-//        BillingResult responseCode = billingClient.launchBillingFlow(activity, billingFlowParams);
-//
-//        switch (responseCode.getResponseCode()) {
-//
-//            case BillingClient.BillingResponseCode.BILLING_UNAVAILABLE:
-//                if (purchaseListioner != null)
-//                    purchaseListioner.displayErrorMessage("Billing not supported for type of request");
-//                return "Billing not supported for type of request";
-//
-//            case BillingClient.BillingResponseCode.ITEM_NOT_OWNED:
-//            case BillingClient.BillingResponseCode.DEVELOPER_ERROR:
-//                return "";
-//
-//            case BillingClient.BillingResponseCode.ERROR:
-//                if (purchaseListioner != null)
-//                    purchaseListioner.displayErrorMessage("Error completing request");
-//                return "Error completing request";
-//
-//            case BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED:
-//                return "Error processing request.";
-//
-//            case BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED:
-//                return "Selected item is already owned";
-//
-//            case BillingClient.BillingResponseCode.ITEM_UNAVAILABLE:
-//                return "Item not available";
-//
-//            case BillingClient.BillingResponseCode.SERVICE_DISCONNECTED:
-//                return "Play Store service is not connected now";
-//
-//            case BillingClient.BillingResponseCode.SERVICE_TIMEOUT:
-//                return "Timeout";
-//
-//            case BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE:
-//                if (purchaseListioner != null)
-//                    purchaseListioner.displayErrorMessage("Network error.");
-//                return "Network Connection down";
-//
-//            case BillingClient.BillingResponseCode.USER_CANCELED:
-//                if (purchaseListioner != null)
-//                    purchaseListioner.displayErrorMessage("Request Canceled");
-//                return "Request Canceled";
-//
-//            case BillingClient.BillingResponseCode.OK:
-//                return "Subscribed Successfully";
-//
-//            //}
-//
-//        }
+        if (productDetails == null) {
+            return "SubsId invalid";
+        }
+
+        idPurchaseCurrent = subsId;
+        typeIap = TYPE_IAP.SUBSCRIPTION;
+
+        List<ProductDetails.SubscriptionOfferDetails> offerDetails = productDetails.getSubscriptionOfferDetails();
+        if (offerDetails == null) {
+            return "Product ID invalid";
+        }
+
+        String offerToken = offerDetails.get(0).getOfferToken();
+        ImmutableList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
+                ImmutableList.of(
+                        BillingFlowParams.ProductDetailsParams.newBuilder()
+                                .setProductDetails(productDetails)
+                                .setOfferToken(offerToken)
+                                .build()
+                );
+
+        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
+                .setProductDetailsParamsList(productDetailsParamsList)
+                .build();
+        BillingResult responseCode = billingClient.launchBillingFlow(activity, billingFlowParams);
+
+        switch (responseCode.getResponseCode()) {
+
+            case BillingClient.BillingResponseCode.BILLING_UNAVAILABLE:
+                if (purchaseListioner != null)
+                    purchaseListioner.displayErrorMessage("Billing not supported for type of request");
+                return "Billing not supported for type of request";
+
+            case BillingClient.BillingResponseCode.ITEM_NOT_OWNED:
+            case BillingClient.BillingResponseCode.DEVELOPER_ERROR:
+                return "";
+
+            case BillingClient.BillingResponseCode.ERROR:
+                if (purchaseListioner != null)
+                    purchaseListioner.displayErrorMessage("Error completing request");
+                return "Error completing request";
+
+            case BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED:
+                return "Error processing request.";
+
+            case BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED:
+                return "Selected item is already owned";
+
+            case BillingClient.BillingResponseCode.ITEM_UNAVAILABLE:
+                return "Item not available";
+
+            case BillingClient.BillingResponseCode.SERVICE_DISCONNECTED:
+                return "Play Store service is not connected now";
+
+            case BillingClient.BillingResponseCode.SERVICE_TIMEOUT:
+                return "Timeout";
+
+            case BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE:
+                if (purchaseListioner != null)
+                    purchaseListioner.displayErrorMessage("Network error.");
+                return "Network Connection down";
+
+            case BillingClient.BillingResponseCode.USER_CANCELED:
+                if (purchaseListioner != null)
+                    purchaseListioner.displayErrorMessage("Request Canceled");
+                return "Request Canceled";
+
+            case BillingClient.BillingResponseCode.OK:
+                return "Subscribed Successfully";
+
+            //}
+
+        }
         return "";
     }
 
@@ -619,7 +647,7 @@ public class AppPurchase {
             public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> list) {
                 if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                     for (Purchase purchase : list) {
-                        if (purchase.getSkus().contains(productId)) {
+                        if (purchase.getProducts().contains(productId)) {
                             try {
                                 ConsumeParams consumeParams =
                                         ConsumeParams.newBuilder()
