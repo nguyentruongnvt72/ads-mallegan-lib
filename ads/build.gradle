@@ -11,8 +11,8 @@ android {
     defaultConfig {
         minSdkVersion 23
         targetSdkVersion 35
-        versionCode 118
-        versionName "1.1.8"
+        versionCode 119
+        versionName "1.1.9"
 
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -59,7 +59,7 @@ dependencies {
 
     def multidex_version = "2.0.1"
     implementation "androidx.multidex:multidex:$multidex_version"
-    implementation "com.android.billingclient:billing:6.1.0"
+    implementation "com.android.billingclient:billing:8.0.0"
     implementation 'com.google.android.gms:play-services-ads-identifier:18.1.0'
     implementation 'com.google.android.ump:user-messaging-platform:2.1.0'
     // Firebase
