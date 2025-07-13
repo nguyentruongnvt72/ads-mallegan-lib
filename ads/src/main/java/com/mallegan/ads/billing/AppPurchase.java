@@ -328,6 +328,7 @@ public class AppPurchase {
 //            listINAPId.add(PRODUCT_ID_TEST);
 //        }
         billingClient = BillingClient.newBuilder(application)
+                .enablePendingPurchases()
                 .setListener(purchasesUpdatedListener)
                 .build();
 
