@@ -257,8 +257,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             };
         AdRequest request = getAdRequest();
         AppOpenAd.load(
-            myApplication, isSplash ? splashAdId : appResumeAdId, request,
-            AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
+            myApplication, isSplash ? splashAdId : appResumeAdId, request, loadCallback);
     }
 
     /**
@@ -491,8 +490,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             };
         AdRequest request = getAdRequest();
         AppOpenAd.load(
-            myApplication, appResumeAdId, request,
-            AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
+            myApplication, appResumeAdId, request, loadCallback);
     }
 
 
@@ -618,8 +616,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             };
         AdRequest request = getAdRequest();
         AppOpenAd.load(
-            myApplication, splashAdId, request,
-            AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
+            myApplication, splashAdId, request, loadCallback);
 
         if (splashTimeout > 0) {
             timeoutHandler = new Handler();
@@ -832,7 +829,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         }
                     }
                 };
-                AppOpenAd.load(context, adUnitId, adRequest, AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, appOpenAdLoadCallback);
+                AppOpenAd.load(context, adUnitId, adRequest, appOpenAdLoadCallback);
             }
         }
 
@@ -895,7 +892,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         }
                     }
                 };
-                AppOpenAd.load(context, listIDResume.get(0), adRequest, AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, appOpenAdLoadCallback);
+                AppOpenAd.load(context, listIDResume.get(0), adRequest, appOpenAdLoadCallback);
             }
         }
     }
