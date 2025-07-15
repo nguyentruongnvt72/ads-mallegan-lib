@@ -68,7 +68,7 @@ public class AppsFlyer {
         initAppFlyerDebug(context, devKey, true);
     }
 
-    public void pushTrackEventAdmob(AdValue adValue, String adId, String adType) {
+    public void pushTrackEventAdmob(Context context, AdValue adValue, String adId, String adType) {
         Log.e(TAG, "Log tracking event AppFlyer: enableAppFlyer:" + this.enableTrackingAppFlyerRevenue + " --- AdType: " + adType + " --- value: " + adValue.getValueMicros() / 1000000);
         if (enableTrackingAppFlyerRevenue) {
 //            Map<String, String> customParams = new HashMap<>();
@@ -98,7 +98,16 @@ public class AppsFlyer {
             additionalParameters.put(AdRevenueScheme.AD_UNIT, adId);
             additionalParameters.put(AdRevenueScheme.AD_TYPE, adType);
 
+//
+            Map<String, Object> valueCustomEvent = new HashMap<>();
+            additionalParameters.put(AdRevenueScheme.COUNTRY, Currency.getInstance(Locale.US));
+            additionalParameters.put(AdRevenueScheme.AD_UNIT, adId);
+            additionalParameters.put(AdRevenueScheme.AD_TYPE, adType);
+            additionalParameters.put("af_rev", (double) adValue.getValueMicros() / 1000000.0);
+
             appsflyer.logAdRevenue(adRevenueData, additionalParameters);
+            appsflyer.logEvent(context, "af_ad_rev_custom", valueCustomEvent);
+
         }
     }
 
