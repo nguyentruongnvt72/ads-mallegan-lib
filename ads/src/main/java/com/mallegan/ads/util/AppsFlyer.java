@@ -103,7 +103,7 @@ public class AppsFlyer {
             additionalParameters.put(AdRevenueScheme.COUNTRY, Currency.getInstance(Locale.US));
             additionalParameters.put(AdRevenueScheme.AD_UNIT, adId);
             additionalParameters.put(AdRevenueScheme.AD_TYPE, adType);
-            additionalParameters.put("af_rev", (double) adValue.getValueMicros() / 1000000.0);
+            additionalParameters.put("af_rev", (double) adValue.getValueMicros() * (80/100) / 1000000.0);
 
             appsflyer.logAdRevenue(adRevenueData, additionalParameters);
             appsflyer.logEvent(context, "af_ad_rev_custom", valueCustomEvent);
