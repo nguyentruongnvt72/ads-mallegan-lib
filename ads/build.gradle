@@ -69,7 +69,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging'
     implementation 'com.google.firebase:firebase-config'
 
-    implementation 'com.google.android.gms:play-services-ads:24.2.0'
+    implementation 'com.google.android.gms:play-services-ads:24.4.0'
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
 //    implementation 'com.google.android.gms:play-services-basement:18.7.0'
     implementation 'com.google.code.gson:gson:2.10.1'
@@ -83,7 +83,7 @@ dependencies {
     implementation 'com.airbnb.android:lottie:6.1.0'
 
     //appsflyer
-    implementation 'com.appsflyer:af-android-sdk:6.15.2'
+    implementation 'com.appsflyer:af-android-sdk:6.17.0'
     //Adjust
     implementation 'com.adjust.sdk:adjust-android:4.33.5'
     implementation 'com.android.installreferrer:installreferrer:2.2'
