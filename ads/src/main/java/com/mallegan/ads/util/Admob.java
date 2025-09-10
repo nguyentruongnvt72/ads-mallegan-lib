@@ -1398,7 +1398,15 @@ public class Admob {
                             if (interstitialAd != null) {
                                 if (AppOpenManager.getInstance().isInitialized()) {
                                     AppOpenManager.getInstance().enableAppResumeWithActivity(activity.getClass());
-                                    dialog2.dismiss();
+                                    if (dialog2 != null && dialog2.isShowing()) {
+                                        try {
+                                            if (activity != null && !activity.isFinishing() && !activity.isDestroyed()) {
+                                                dialog2.dismiss();
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
                                 }
                             }
                             // dialog.dismiss();
