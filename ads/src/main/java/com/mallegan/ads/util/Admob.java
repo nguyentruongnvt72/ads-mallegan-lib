@@ -103,6 +103,8 @@ public class Admob {
     private long currentTime;
     private long currentTimeShowAds;
 
+
+
     public static Admob getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new Admob();
@@ -176,6 +178,11 @@ public class Admob {
      **/
     public void setOpenEventLoadTimeShowAdsInter(boolean logLogTimeShowAds) {
         this.logLogTimeShowAds = logLogTimeShowAds;
+    }
+
+
+    public final boolean isLoadFullAds() {
+        return PreferenceManager.getInstance().getBoolean("is_admob_network_full_ads");
     }
 
     /*=================================Banner ======================================/
@@ -637,6 +644,10 @@ public class Admob {
                         }
                         if (interstitialAd != null) {
                             interstitialAd.setOnPaidEventListener(adValue -> {
+                                if (adValue.getValueMicros() == 0L ) {
+                                    PreferenceManager.getInstance().putBoolean("is_admob_network_full_ads", false);
+                                }
+
                                 Log.d(TAG, "OnPaidEvent loadInterstitialAds:" + adValue.getValueMicros());
                                 FirebaseUtil.logPaidAdImpression(context,
                                     adValue,
@@ -699,6 +710,11 @@ public class Admob {
                             mInterstitialSplash = interstitialAd;
                             AppOpenManager.getInstance().disableAppResume();
                             onShowSplash((Activity) context, adListener);
+                            interstitialAd.setOnPaidEventListener(adValue -> {
+                                if (adValue.getValueMicros() == 0L ) {
+                                    PreferenceManager.getInstance().putBoolean("is_admob_network_full_ads", false);
+                                }
+                            });
                         }
 
                         @Override
@@ -755,6 +771,9 @@ public class Admob {
                                     onShowSplash((Activity) context, adListener);
                                     //tracking adjust
                                     interstitialAd.setOnPaidEventListener(adValue -> {
+                                        if (adValue.getValueMicros() == 0L ) {
+                                            PreferenceManager.getInstance().putBoolean("is_admob_network_full_ads", false);
+                                        }
                                         Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
                                         FirebaseUtil.logPaidAdImpression(context,
                                             adValue,
@@ -952,6 +971,9 @@ public class Admob {
             return;
         }
         mInterstitialSplash.setOnPaidEventListener(adValue -> {
+            if (adValue.getValueMicros() == 0L ) {
+                PreferenceManager.getInstance().putBoolean("is_admob_network_full_ads", false);
+            }
             Log.d(TAG, "OnPaidEvent splash:" + adValue.getValueMicros());
             FirebaseUtil.logPaidAdImpression(context,
                 adValue,
@@ -1130,6 +1152,9 @@ public class Admob {
 
                         //tracking adjust
                         interstitialAd.setOnPaidEventListener(adValue -> {
+                            if (adValue.getValueMicros() == 0L ) {
+                                PreferenceManager.getInstance().putBoolean("is_admob_network_full_ads", false);
+                            }
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
                             FirebaseUtil.logPaidAdImpression(context,
                                 adValue,
@@ -1534,6 +1559,9 @@ public class Admob {
                     .forNativeAd(nativeAd -> {
                         callback.onNativeAdLoaded(nativeAd);
                         nativeAd.setOnPaidEventListener(adValue -> {
+                            if (adValue.getValueMicros() == 0L ) {
+                                PreferenceManager.getInstance().putBoolean("is_admob_network_full_ads", false);
+                            }
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
                             FirebaseUtil.logPaidAdImpression(context,
                                 adValue,
@@ -1601,6 +1629,9 @@ public class Admob {
                             }
                             callback.onNativeAdLoaded(nativeAd);
                             nativeAd.setOnPaidEventListener(adValue -> {
+                                if (adValue.getValueMicros() == 0L ) {
+                                    PreferenceManager.getInstance().putBoolean("is_admob_network_full_ads", false);
+                                }
                                 Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
                                 FirebaseUtil.logPaidAdImpression(context,
                                     adValue,
@@ -1663,6 +1694,9 @@ public class Admob {
                     }
                     callback.onNativeAdLoaded(nativeAd);
                     nativeAd.setOnPaidEventListener(adValue -> {
+                        if (adValue.getValueMicros() == 0L ) {
+                            PreferenceManager.getInstance().putBoolean("is_admob_network_full_ads", false);
+                        }
                         Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
                         FirebaseUtil.logPaidAdImpression(context,
                             adValue,
@@ -1787,6 +1821,9 @@ public class Admob {
                     frameLayout.removeAllViews();
                     frameLayout.addView(adView);
                     nativeAd.setOnPaidEventListener(adValue -> {
+                        if (adValue.getValueMicros() == 0L ) {
+                            PreferenceManager.getInstance().putBoolean("is_admob_network_full_ads", false);
+                        }
                         Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
                         FirebaseUtil.logPaidAdImpression(context,
                             adValue,
