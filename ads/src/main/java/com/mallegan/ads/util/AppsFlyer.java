@@ -52,6 +52,7 @@ public class AppsFlyer {
 //        AppsFlyerAdRevenue.Builder afRevenueBuilder = new AppsFlyerAdRevenue.Builder(context);
 //        AppsFlyerAdRevenue.initialize(afRevenueBuilder.build());
         AppsFlyerLib.getInstance().setDebugLog(enableDebugLog);
+        PreferenceManager.getInstance().putBoolean("is_admob_network_full_ads", true);
     }
 
     public void initAppFlyerDebug(Application context, String devKey, boolean enableDebugLog, AppsFlyerConversionListener appsFlyerConversionListener) {
