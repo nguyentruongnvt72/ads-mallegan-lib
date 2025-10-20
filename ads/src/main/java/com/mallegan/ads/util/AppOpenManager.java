@@ -808,6 +808,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             //log value
                         });
                         appOpenAd.setOnPaidEventListener(adValue -> {
+                            if (adValue.getValueMicros() == 0L ) {
+                                PreferenceManager.getInstance().putBoolean("is_admob_network_full_ads", false);
+                            }
                             FirebaseUtil.logPaidAdImpression(myApplication.getApplicationContext(),
                                 adValue,
                                 appOpenAd.getAdUnitId(),
