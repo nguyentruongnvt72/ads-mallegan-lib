@@ -154,7 +154,7 @@ public class ConsentHelper {
                 });
             },
             error -> Log.w("AD_HANDLER", error.getErrorCode() + ": " + error.getMessage()));
-
+            loadAds.run();
     }
 
     public boolean canRequestAds() {
