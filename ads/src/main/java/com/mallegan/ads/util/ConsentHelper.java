@@ -152,10 +152,13 @@ public class ConsentHelper {
                     showingForm = false;
                     handleConsentResult(activity, consentInformation, loadAds);
                 });
-            },
-            error -> Log.w("AD_HANDLER", error.getErrorCode() + ": " + error.getMessage()));
-            loadAds.run();
+            },error -> {
+                    Log.w("AD_HANDLER", error.getErrorCode() + ": " + error.getMessage());
+                    loadAds.run();
+                }
+        );
     }
+
 
     public boolean canRequestAds() {
         return consentInformation.canRequestAds();
