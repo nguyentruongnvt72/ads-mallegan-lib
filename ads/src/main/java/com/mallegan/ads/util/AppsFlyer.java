@@ -101,10 +101,10 @@ public class AppsFlyer {
 
 //
             Map<String, Object> valueCustomEvent = new HashMap<>();
-            additionalParameters.put(AdRevenueScheme.COUNTRY, Currency.getInstance(Locale.US));
-            additionalParameters.put(AdRevenueScheme.AD_UNIT, adId);
-            additionalParameters.put(AdRevenueScheme.AD_TYPE, adType);
-            additionalParameters.put("af_rev", (double) adValue.getValueMicros() / 1000000.0);
+            valueCustomEvent.put(AdRevenueScheme.COUNTRY, Currency.getInstance(Locale.US));
+            valueCustomEvent.put(AdRevenueScheme.AD_UNIT, adId);
+            valueCustomEvent.put(AdRevenueScheme.AD_TYPE, adType);
+            valueCustomEvent.put("af_rev", (double) adValue.getValueMicros() / 1000000.0);
 
             appsflyer.logAdRevenue(adRevenueData, additionalParameters);
             appsflyer.logEvent(context, "af_ad_rev_custom", valueCustomEvent);
