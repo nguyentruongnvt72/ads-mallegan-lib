@@ -1442,7 +1442,7 @@ public class Admob {
         });
 
         if (Helper.getNumClickAdsPerDay(context, mInterstitialAd.getAdUnitId()) < maxClickAds) {
-            showInterstitialAd(context, mInterstitialAd, callback);
+            showInterstitialAdNoti(context, mInterstitialAd, callback);
             return;
         }
         if (callback != null) {

@@ -1,38 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightTransparent">
+    android:background="#99000000">
 
-    <!--    <com.github.ybq.android.spinkit.SpinKitView-->
-    <!--        android:layout_centerInParent="true"-->
-    <!--        android:id="@+id/spin_kit"-->
-    <!--        style="@style/SpinKitView.Circle"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_gravity="center"-->
-    <!--        app:SpinKit_Color="#515151" />-->
-    <androidx.core.widget.ContentLoadingProgressBar
-        android:id="@+id/ic_loading"
-        style="@style/Widget.AppCompat.ProgressBar"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_gravity="center"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:indeterminate="true"
-        android:indeterminateTint="#26CCC2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/_12sdp"
-        android:visibility="visible" />
+        android:orientation="vertical"
+        android:padding="32dp">
 
-<!--    <TextView-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@+id/ic_loading"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_marginTop="@dimen/_20sdp"-->
-<!--        android:gravity="right"-->
-<!--        android:text="@string/loading_ads"-->
-<!--        android:textSize="@dimen/_13sdp" />-->
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:indeterminate="true"
+            android:indeterminateTint="#FFFFFF"
+            android:backgroundTint="#44FFFFFF" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="Syncing system data…"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
+
 </RelativeLayout>
