@@ -8,7 +8,7 @@ import com.mallegan.ads.R;
 
 public class LoadingAdsDialogNoti  extends Dialog {
     public LoadingAdsDialogNoti(Context context) {
-        super(context, R.style.AppTheme);
+        super(context, R.style.TransparentDialog);
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
