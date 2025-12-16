@@ -13,6 +13,6 @@ public class LoadingAdsDialogNoti  extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dialog_loading_ads);
+        setContentView(R.layout.dialog_loading_ads_noti);
     }
 }

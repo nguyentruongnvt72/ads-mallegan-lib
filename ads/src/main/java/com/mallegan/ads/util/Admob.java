@@ -71,6 +71,7 @@ public class Admob {
     private static Admob INSTANCE;
     private static final String TAG = "Admob";
     private LoadingAdsDialog dialog;
+    private LoadingAdsDialogNoti dialogNoti;
     private int currentClicked = 0;
     private int numShowAds = 3;
     private int maxClickAds = 100;
@@ -1343,7 +1344,172 @@ public class Admob {
             callback.onNextAction();
         }
     }
+    /**
+     * Show ads inter noti
+     */
+    public void showInterAdsNoti(Context context, InterstitialAd mInterstitialAd, final InterCallback callback) {
+        showInterAdsNoti(context, mInterstitialAd, callback, false);
 
+    }
+
+    private void showInterAdsNoti(Context context, InterstitialAd mInterstitialAd, final InterCallback callback, boolean shouldReload) {
+        currentClicked = numShowAds;
+        showInterAdByTimesNoti(context, mInterstitialAd, callback, shouldReload);
+    }
+
+    private void showInterAdByTimesNoti(final Context context, InterstitialAd mInterstitialAd, final InterCallback callback, final boolean shouldReloadAds) {
+
+        if (logLogTimeShowAds) {
+            currentTimeShowAds = System.currentTimeMillis();
+        }
+        Helper.setupAdmodData(context);
+        if (AppPurchase.getInstance().isPurchased(context) || !isShowAllAds) {
+            callback.onAdClosed();
+            callback.onNextAction();
+            return;
+        }
+        if (mInterstitialAd == null) {
+            if (callback != null) {
+                callback.onAdClosed();
+                callback.onNextAction();
+            }
+            return;
+        }
+
+        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+            @Override
+            public void onAdDismissedFullScreenContent() {
+                super.onAdDismissedFullScreenContent();
+                // Called when fullscreen content is dismissed.
+                if (AppOpenManager.getInstance().isInitialized()) {
+                    AppOpenManager.getInstance().enableAppResume();
+                }
+                if (callback != null) {
+                    if (!openActivityAfterShowInterAds) {
+                        callback.onAdClosed();
+                        callback.onNextAction();
+                    } else {
+                        callback.onAdClosedByUser();
+                    }
+
+                    if (dialogNoti != null) {
+                        dialogNoti.dismiss();
+                    }
+
+                }
+                Log.e(TAG, "onAdDismissedFullScreenContent");
+            }
+
+            @Override
+            public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                super.onAdFailedToShowFullScreenContent(adError);
+                Log.e(TAG, "onAdFailedToShowFullScreenContent: " + adError.getMessage());
+
+
+                // Called when fullscreen content failed to show.
+                if (callback != null) {
+                    if (!openActivityAfterShowInterAds) {
+                        callback.onAdClosed();
+                        callback.onNextAction();
+                    }
+
+                    if (dialogNoti != null) {
+                        dialogNoti.dismiss();
+                    }
+                }
+            }
+
+            @Override
+            public void onAdShowedFullScreenContent() {
+                super.onAdShowedFullScreenContent();
+                // Called when fullscreen content is shown.
+                if (logLogTimeShowAds) {
+                    long timeLoad = System.currentTimeMillis() - currentTimeShowAds;
+                    Log.e(TAG, "show ads time :" + timeLoad);
+                    FirebaseUtil.logTimeLoadShowAdsInter(context, (double) timeLoad / 1000);
+                }
+            }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                if (disableAdResumeWhenClickAds)
+                    AppOpenManager.getInstance().disableAdResumeByClickAction();
+                if (timeLimitAds > 1000)
+                    setTimeLimitInter();
+                FirebaseUtil.logClickAdsEvent(context, mInterstitialAd.getAdUnitId());
+            }
+        });
+
+        if (Helper.getNumClickAdsPerDay(context, mInterstitialAd.getAdUnitId()) < maxClickAds) {
+            showInterstitialAd(context, mInterstitialAd, callback);
+            return;
+        }
+        if (callback != null) {
+            callback.onAdClosed();
+            callback.onNextAction();
+        }
+    }
+
+    private void showInterstitialAdNoti(Context context, InterstitialAd mInterstitialAd, InterCallback callback) {
+        if (!isShowInter || !isShowAllAds) {
+            callback.onAdClosed();
+            callback.onNextAction();
+            return;
+        }
+        if (!isNetworkConnected() || mInterstitialAd == null) {
+            callback.onAdClosed();
+            callback.onNextAction();
+            return;
+        }
+        currentClicked++;
+        if (currentClicked >= numShowAds && mInterstitialAd != null) {
+            if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+                try {
+                    if (dialogNoti != null && dialogNoti.isShowing())
+                        dialogNoti.dismiss();
+                    dialogNoti = new LoadingAdsDialogNoti(context);
+                    try {
+                        dialogNoti.show();
+                    } catch (Exception e) {
+                        callback.onAdClosed();
+                        callback.onNextAction();
+                        return;
+                    }
+                } catch (Exception e) {
+                    dialogNoti = null;
+                    e.printStackTrace();
+                }
+                new Handler().postDelayed(() -> {
+                    if (AppOpenManager.getInstance().isInitialized()) {
+                        AppOpenManager.getInstance().disableAppResume();
+                    }
+
+                    if (openActivityAfterShowInterAds && callback != null) {
+                        callback.onAdClosed();
+                        callback.onNextAction();
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (dialogNoti != null && dialogNoti.isShowing() && !((Activity) context).isDestroyed())
+                                    dialogNoti.dismiss();
+                            }
+                        }, 1500);
+                    }
+                    mInterstitialAd.show((Activity) context);
+
+                }, 800);
+
+            }
+            currentClicked = 0;
+        } else if (callback != null) {
+            if (dialogNoti != null) {
+                dialogNoti.dismiss();
+            }
+            callback.onAdClosed();
+            callback.onNextAction();
+        }
+    }
 
     /**
      * load and show ads inter
