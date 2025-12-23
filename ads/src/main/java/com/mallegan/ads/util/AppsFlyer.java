@@ -100,14 +100,14 @@ public class AppsFlyer {
             additionalParameters.put(AdRevenueScheme.AD_TYPE, adType);
 
 //
-            Map<String, Object> valueCustomEvent = new HashMap<>();
-            valueCustomEvent.put(AdRevenueScheme.COUNTRY, Currency.getInstance(Locale.US));
-            valueCustomEvent.put(AdRevenueScheme.AD_UNIT, adId);
-            valueCustomEvent.put(AdRevenueScheme.AD_TYPE, adType);
-            valueCustomEvent.put("af_revenue", (double) adValue.getValueMicros() / 1000000.0);
+//            Map<String, Object> valueCustomEvent = new HashMap<>();
+//            valueCustomEvent.put(AdRevenueScheme.COUNTRY, Currency.getInstance(Locale.US));
+//            valueCustomEvent.put(AdRevenueScheme.AD_UNIT, adId);
+//            valueCustomEvent.put(AdRevenueScheme.AD_TYPE, adType);
+//            valueCustomEvent.put("af_revenue", (double) adValue.getValueMicros() / 1000000.0);
 
             appsflyer.logAdRevenue(adRevenueData, additionalParameters);
-            appsflyer.logEvent(context, "ad_revenue_100_percent", valueCustomEvent);
+//            appsflyer.logEvent(context, "ad_revenue_100_percent", valueCustomEvent);
 
         }
     }
